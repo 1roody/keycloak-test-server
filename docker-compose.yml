@@ -1,3 +1,5 @@
+# Development settings
+
 services:
   postgresql:
     image: postgres:16
@@ -5,6 +7,8 @@ services:
       - POSTGRES_USER=keycloak
       - POSTGRES_DB=keycloak
       - POSTGRES_PASSWORD=SUPERsecret
+    ports:
+      - "5432:5432"
     volumes:
       - "/home/ubuntu/docker/keycloak/postgresql_data:/var/lib/postgresql/data"
     networks:
@@ -13,7 +17,8 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:25.0.6
     restart: always
-    command: start-dev
+    # command: start-dev
+    command: ["start", "--hostname-strict=false"]
     depends_on:
       - postgresql
     environment:
@@ -21,7 +26,6 @@ services:
       - KC_HOSTNAME_STRICT=false
       - KC_HOSTNAME_PORT=8080
       - KC_HOSTNAME=0.0.0.0
-      - KC_PROXY=edge
       - KC_HTTP_ENABLED=true
       - KC_DB=postgres
       - KC_DB_USERNAME=keycloak
